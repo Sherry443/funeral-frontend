@@ -1,41 +1,43 @@
 /**
- * Checkout Form - Debug Version
- * With console logs to identify issues
+ * CHECKOUT FORM - ENHANCED VERSION
+ * Properly handles cart ID and saves it when received from backend
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
-import { Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
-
-import Button from '../../Common/Button';
+import { Form, FormGroup, Label, Input, Row, Col, Spinner } from 'reactstrap';
+import Button from '../../components/Common/Button';
 import { clearCart } from '../Cart/actions';
 import { success } from 'react-notification-system-redux';
-import './CheckoutForm.css';
 
-const CheckoutForm = props => {
-    const { cartItems, cartTotal, user, setError, clearCart: clearCartAction, showNotification } = props;
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+
+// ==============================================
+// PAYMENT FORM
+// ==============================================
+const PaymentForm = (props) => {
+    const {
+        cartItems,
+        cartTotal,
+        user,
+        setError,
+        clearCart: clearCartAction,
+        showSuccessNotification,
+        cartId,
+        orderId
+    } = props;
 
     const stripe = useStripe();
     const elements = useElements();
     const history = useHistory();
+    const isMountedRef = useRef(true);
 
-    console.log('🔧 CheckoutForm mounted');
-    console.log('📦 Cart Items:', cartItems);
-    console.log('💰 Cart Total:', cartTotal);
-    console.log('👤 User:', user);
-    console.log('🔑 Stripe loaded:', !!stripe);
-    console.log('📝 Elements loaded:', !!elements);
-
-    // Form states
     const [isProcessing, setIsProcessing] = useState(false);
-    const [clientSecret, setClientSecret] = useState('');
-    const [orderId, setOrderId] = useState('');
-    const [paymentReady, setPaymentReady] = useState(false);
-
-    // Billing details
     const [billingDetails, setBillingDetails] = useState({
         name: user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : '',
         email: user?.email || '',
@@ -50,21 +52,11 @@ const CheckoutForm = props => {
         }
     });
 
-    // Shipping details
-    const [shippingDetails, setShippingDetails] = useState({
-        name: '',
-        phone: '',
-        address: {
-            line1: '',
-            line2: '',
-            city: '',
-            state: '',
-            postal_code: '',
-            country: 'US'
-        }
-    });
-
-    const [sameAsBilling, setSameAsBilling] = useState(true);
+    useEffect(() => {
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
 
     const handleBillingChange = e => {
         const { name, value } = e.target;
@@ -72,131 +64,45 @@ const CheckoutForm = props => {
             const [parent, child] = name.split('.');
             setBillingDetails(prev => ({
                 ...prev,
-                [parent]: {
-                    ...prev[parent],
-                    [child]: value
-                }
+                [parent]: { ...prev[parent], [child]: value }
             }));
         } else {
-            setBillingDetails(prev => ({
-                ...prev,
-                [name]: value
-            }));
+            setBillingDetails(prev => ({ ...prev, [name]: value }));
         }
     };
 
-    const handleShippingChange = e => {
-        const { name, value } = e.target;
-        if (name.includes('.')) {
-            const [parent, child] = name.split('.');
-            setShippingDetails(prev => ({
-                ...prev,
-                [parent]: {
-                    ...prev[parent],
-                    [child]: value
-                }
-            }));
-        } else {
-            setShippingDetails(prev => ({
-                ...prev,
-                [name]: value
-            }));
-        }
+    const getAuthToken = () => {
+        return localStorage.getItem('token') ||
+            localStorage.getItem('authToken') ||
+            localStorage.getItem('access_token');
     };
 
-    const createPaymentIntent = async () => {
-        console.log('🚀 Creating payment intent...');
-
-        try {
-            setIsProcessing(true);
-            const cartId = localStorage.getItem('cart_id');
-            const token = localStorage.getItem('token');
-
-            console.log('📦 Cart ID:', cartId);
-            console.log('🔑 Token exists:', !!token);
-
-            if (!cartId) {
-                console.error('❌ No cart ID found');
-                setError('Cart ID not found. Please try adding items to cart again.');
-                setIsProcessing(false);
-                return;
-            }
-
-            if (!token) {
-                console.error('❌ No auth token found');
-                setError('Authentication token not found. Please login again.');
-                setIsProcessing(false);
-                return;
-            }
-
-            const shippingData = sameAsBilling ? billingDetails : shippingDetails;
-
-            const requestData = {
-                cartId,
-                billingDetails,
-                shippingDetails: shippingData
-            };
-
-            console.log('📤 Sending request:', requestData);
-
-            const response = await axios.post(
-                'http://localhost:3000/api/order/create-payment-intent',
-                requestData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-
-            console.log('✅ Payment intent created:', response.data);
-
-            setClientSecret(response.data.clientSecret);
-            setOrderId(response.data.orderId);
-            setPaymentReady(true);
-            setIsProcessing(false);
-
-            console.log('✅ Payment form should now be visible');
-        } catch (error) {
-            console.error('❌ Error creating payment intent:', error);
-            console.error('❌ Error response:', error.response?.data);
-            console.error('❌ Error status:', error.response?.status);
-
-            const errorMessage = error.response?.data?.error || error.message || 'Failed to initialize payment';
-            setError(errorMessage);
-            setIsProcessing(false);
-        }
-    };
-
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('📋 Form submitted');
-        console.log('💳 Payment ready:', paymentReady);
-        console.log('🔐 Client secret exists:', !!clientSecret);
 
         if (!stripe || !elements) {
-            console.error('❌ Stripe not loaded');
+            console.log('⚠️ Stripe or Elements not ready');
             return;
         }
 
-        // Step 1: Create payment intent if not created
-        if (!clientSecret) {
-            console.log('⏭️ Creating payment intent first...');
-            await createPaymentIntent();
-            return;
-        }
-
-        // Step 2: Confirm payment
-        console.log('💳 Confirming payment...');
         setIsProcessing(true);
         setError('');
 
         try {
+            console.log('💳 Confirming payment with Stripe...');
+
             const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
                 elements,
                 confirmParams: {
-                    return_url: `${window.location.origin}/order-confirmation/${orderId}`
+                    return_url: `${window.location.origin}/order-success`,
+                    payment_method_data: {
+                        billing_details: {
+                            name: billingDetails.name,
+                            email: billingDetails.email,
+                            phone: billingDetails.phone,
+                            address: billingDetails.address
+                        }
+                    }
                 },
                 redirect: 'if_required'
             });
@@ -208,325 +114,372 @@ const CheckoutForm = props => {
                 return;
             }
 
-            console.log('✅ Payment intent:', paymentIntent);
+            console.log('✅ Payment confirmed:', paymentIntent);
 
             if (paymentIntent && paymentIntent.status === 'succeeded') {
-                console.log('✅ Payment succeeded, confirming with backend...');
+                const token = getAuthToken();
+                const config = {
+                    headers: { 'Content-Type': 'application/json' }
+                };
 
-                // Confirm with backend
-                await axios.post(
-                    'http://localhost:3000/api/order/confirm-payment',
-                    {
-                        orderId: orderId,
-                        paymentIntentId: paymentIntent.id
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem('token')}`
-                        }
+                if (token) {
+                    config.headers.Authorization = `Bearer ${token}`;
+                }
+
+                try {
+                    await axios.post(
+                        `${API_URL}/api/order/stripe/confirm-payment`,
+                        {
+                            paymentIntentId: paymentIntent.id,
+                            orderId: orderId, // ✅ Send order ID
+                            cartId: cartId,   // ✅ Send cart ID
+                            billingDetails,
+                            shippingDetails: billingDetails
+                        },
+                        config
+                    );
+
+                    console.log('✅ Order confirmed with backend');
+
+                    // Clear cart and localStorage
+                    if (clearCartAction && typeof clearCartAction === 'function') {
+                        clearCartAction();
                     }
-                );
+                    localStorage.removeItem('cart_id');
+                    localStorage.removeItem('cartId');
 
-                console.log('✅ Order confirmed with backend');
+                    showSuccessNotification({
+                        title: '✅ Order Placed Successfully!',
+                        message: 'Check your email for confirmation',
+                        position: 'tr',
+                        autoDismiss: 3
+                    });
 
-                // Clear cart
-                clearCartAction();
+                    setTimeout(() => {
+                        if (isMountedRef.current) {
+                            history.push('/order-success');
+                        }
+                    }, 1000);
+                } catch (backendError) {
+                    console.error('⚠️ Backend confirmation error:', backendError);
 
-                // Show success notification
-                showNotification({
-                    title: '✅ Order Placed Successfully!',
-                    message: 'Check your email for confirmation',
-                    position: 'tr',
-                    autoDismiss: 3
-                });
+                    // Payment succeeded but backend failed - still clear cart
+                    if (clearCartAction && typeof clearCartAction === 'function') {
+                        clearCartAction();
+                    }
+                    localStorage.removeItem('cart_id');
+                    localStorage.removeItem('cartId');
 
-                // Redirect to confirmation page
-                console.log('🔄 Redirecting to confirmation page...');
-                history.push(`/order-confirmation/${orderId}`);
+                    showSuccessNotification({
+                        title: '✅ Payment Successful!',
+                        message: 'Your payment was processed',
+                        position: 'tr',
+                        autoDismiss: 3
+                    });
+
+                    setTimeout(() => {
+                        if (isMountedRef.current) {
+                            history.push('/order-success');
+                        }
+                    }, 1000);
+                }
             }
         } catch (error) {
             console.error('❌ Payment error:', error);
-            console.error('❌ Error response:', error.response?.data);
-            setError('Payment failed. Please try again or contact support.');
+            setError(error.response?.data?.error || 'Payment failed. Please try again.');
             setIsProcessing(false);
         }
     };
 
-    console.log('🎨 Rendering form - paymentReady:', paymentReady);
-
     return (
         <Form onSubmit={handleSubmit}>
-            {/* Step 1: Billing Information */}
-            {!paymentReady && (
-                <>
-                    <h5 className="mb-3">Billing Information</h5>
+            <div className="billing-section mb-4">
+                <h5 className="mb-3">Billing Information</h5>
 
-                    <Row>
-                        <Col md="6">
-                            <FormGroup>
-                                <Label>Full Name *</Label>
-                                <Input
-                                    type="text"
-                                    name="name"
-                                    value={billingDetails.name}
-                                    onChange={handleBillingChange}
-                                    required
-                                    placeholder="John Doe"
-                                />
-                            </FormGroup>
-                        </Col>
-                        <Col md="6">
-                            <FormGroup>
-                                <Label>Email *</Label>
-                                <Input
-                                    type="email"
-                                    name="email"
-                                    value={billingDetails.email}
-                                    onChange={handleBillingChange}
-                                    required
-                                    placeholder="john@example.com"
-                                />
-                            </FormGroup>
-                        </Col>
-                    </Row>
+                <Row>
+                    <Col md="6">
+                        <FormGroup>
+                            <Label>Full Name *</Label>
+                            <Input
+                                type="text"
+                                name="name"
+                                value={billingDetails.name}
+                                onChange={handleBillingChange}
+                                required
+                                placeholder="John Doe"
+                            />
+                        </FormGroup>
+                    </Col>
+                    <Col md="6">
+                        <FormGroup>
+                            <Label>Email *</Label>
+                            <Input
+                                type="email"
+                                name="email"
+                                value={billingDetails.email}
+                                onChange={handleBillingChange}
+                                required
+                                placeholder="john@example.com"
+                            />
+                        </FormGroup>
+                    </Col>
+                </Row>
 
-                    <FormGroup>
-                        <Label>Phone Number *</Label>
-                        <Input
-                            type="tel"
-                            name="phone"
-                            value={billingDetails.phone}
-                            onChange={handleBillingChange}
-                            required
-                            placeholder="+1 (555) 123-4567"
-                        />
-                    </FormGroup>
-
-                    <FormGroup>
-                        <Label>Address Line 1 *</Label>
-                        <Input
-                            type="text"
-                            name="address.line1"
-                            value={billingDetails.address.line1}
-                            onChange={handleBillingChange}
-                            required
-                            placeholder="123 Main Street"
-                        />
-                    </FormGroup>
-
-                    <FormGroup>
-                        <Label>Address Line 2</Label>
-                        <Input
-                            type="text"
-                            name="address.line2"
-                            value={billingDetails.address.line2}
-                            onChange={handleBillingChange}
-                            placeholder="Apartment, suite, etc."
-                        />
-                    </FormGroup>
-
-                    <Row>
-                        <Col md="6">
-                            <FormGroup>
-                                <Label>City *</Label>
-                                <Input
-                                    type="text"
-                                    name="address.city"
-                                    value={billingDetails.address.city}
-                                    onChange={handleBillingChange}
-                                    required
-                                    placeholder="New York"
-                                />
-                            </FormGroup>
-                        </Col>
-                        <Col md="3">
-                            <FormGroup>
-                                <Label>State *</Label>
-                                <Input
-                                    type="text"
-                                    name="address.state"
-                                    value={billingDetails.address.state}
-                                    onChange={handleBillingChange}
-                                    required
-                                    placeholder="NY"
-                                />
-                            </FormGroup>
-                        </Col>
-                        <Col md="3">
-                            <FormGroup>
-                                <Label>ZIP Code *</Label>
-                                <Input
-                                    type="text"
-                                    name="address.postal_code"
-                                    value={billingDetails.address.postal_code}
-                                    onChange={handleBillingChange}
-                                    required
-                                    placeholder="10001"
-                                />
-                            </FormGroup>
-                        </Col>
-                    </Row>
-
-                    {/* Shipping Address */}
-                    <h5 className="mt-4 mb-3">Shipping Information</h5>
-
-                    <FormGroup check className="mb-3">
-                        <Input
-                            type="checkbox"
-                            id="sameAsBilling"
-                            checked={sameAsBilling}
-                            onChange={e => setSameAsBilling(e.target.checked)}
-                        />
-                        <Label check htmlFor="sameAsBilling">
-                            Same as billing address
-                        </Label>
-                    </FormGroup>
-
-                    {!sameAsBilling && (
-                        <>
-                            <FormGroup>
-                                <Label>Recipient Name *</Label>
-                                <Input
-                                    type="text"
-                                    name="name"
-                                    value={shippingDetails.name}
-                                    onChange={handleShippingChange}
-                                    required
-                                    placeholder="John Doe"
-                                />
-                            </FormGroup>
-
-                            <FormGroup>
-                                <Label>Phone Number *</Label>
-                                <Input
-                                    type="tel"
-                                    name="phone"
-                                    value={shippingDetails.phone}
-                                    onChange={handleShippingChange}
-                                    required
-                                    placeholder="+1 (555) 123-4567"
-                                />
-                            </FormGroup>
-
-                            <FormGroup>
-                                <Label>Address Line 1 *</Label>
-                                <Input
-                                    type="text"
-                                    name="address.line1"
-                                    value={shippingDetails.address.line1}
-                                    onChange={handleShippingChange}
-                                    required
-                                    placeholder="123 Main Street"
-                                />
-                            </FormGroup>
-
-                            <Row>
-                                <Col md="6">
-                                    <FormGroup>
-                                        <Label>City *</Label>
-                                        <Input
-                                            type="text"
-                                            name="address.city"
-                                            value={shippingDetails.address.city}
-                                            onChange={handleShippingChange}
-                                            required
-                                            placeholder="New York"
-                                        />
-                                    </FormGroup>
-                                </Col>
-                                <Col md="3">
-                                    <FormGroup>
-                                        <Label>State *</Label>
-                                        <Input
-                                            type="text"
-                                            name="address.state"
-                                            value={shippingDetails.address.state}
-                                            onChange={handleShippingChange}
-                                            required
-                                            placeholder="NY"
-                                        />
-                                    </FormGroup>
-                                </Col>
-                                <Col md="3">
-                                    <FormGroup>
-                                        <Label>ZIP Code *</Label>
-                                        <Input
-                                            type="text"
-                                            name="address.postal_code"
-                                            value={shippingDetails.address.postal_code}
-                                            onChange={handleShippingChange}
-                                            required
-                                            placeholder="10001"
-                                        />
-                                    </FormGroup>
-                                </Col>
-                            </Row>
-                        </>
-                    )}
-
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        disabled={isProcessing}
-                        text={isProcessing ? 'Processing...' : 'Continue to Payment'}
-                        className="w-100 mt-4"
-                        size="lg"
+                <FormGroup>
+                    <Label>Phone *</Label>
+                    <Input
+                        type="tel"
+                        name="phone"
+                        value={billingDetails.phone}
+                        onChange={handleBillingChange}
+                        required
+                        placeholder="+1 (555) 123-4567"
                     />
-                </>
-            )}
+                </FormGroup>
 
-            {/* Step 2: Payment Element */}
-            {paymentReady && clientSecret && (
-                <>
-                    <div className="alert alert-success mb-4">
-                        ✅ Payment form loaded successfully!
-                    </div>
-
-                    <h5 className="mb-3">Payment Details</h5>
-                    <p className="text-muted mb-4">
-                        All transactions are secure and encrypted.
-                    </p>
-
-                    <div className="payment-element-container mb-4">
-                        <PaymentElement
-                            options={{
-                                layout: 'tabs'
-                            }}
-                        />
-                    </div>
-
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        disabled={isProcessing || !stripe || !elements}
-                        text={isProcessing ? 'Processing Payment...' : `Pay $${cartTotal.toFixed(2)}`}
-                        className="w-100 mt-4"
-                        size="lg"
+                <FormGroup>
+                    <Label>Address *</Label>
+                    <Input
+                        type="text"
+                        name="address.line1"
+                        value={billingDetails.address.line1}
+                        onChange={handleBillingChange}
+                        required
+                        placeholder="123 Main Street"
                     />
+                </FormGroup>
 
-                    <p className="secure-notice text-muted text-center mt-3">
-                        🔒 Your payment information is secure and encrypted
-                    </p>
-                </>
-            )}
-
-            {/* Debug Info (Remove in production) */}
-            <div className="mt-4 p-3 bg-light" style={{ fontSize: '12px' }}>
-                <strong>Debug Info:</strong>
-                <div>Payment Ready: {paymentReady ? '✅ Yes' : '❌ No'}</div>
-                <div>Client Secret: {clientSecret ? '✅ Present' : '❌ Missing'}</div>
-                <div>Order ID: {orderId || '❌ Not created'}</div>
-                <div>Processing: {isProcessing ? '⏳ Yes' : '✅ No'}</div>
+                <Row>
+                    <Col md="5">
+                        <FormGroup>
+                            <Label>City *</Label>
+                            <Input
+                                type="text"
+                                name="address.city"
+                                value={billingDetails.address.city}
+                                onChange={handleBillingChange}
+                                required
+                                placeholder="New York"
+                            />
+                        </FormGroup>
+                    </Col>
+                    <Col md="3">
+                        <FormGroup>
+                            <Label>State *</Label>
+                            <Input
+                                type="text"
+                                name="address.state"
+                                value={billingDetails.address.state}
+                                onChange={handleBillingChange}
+                                required
+                                placeholder="NY"
+                                maxLength="2"
+                            />
+                        </FormGroup>
+                    </Col>
+                    <Col md="4">
+                        <FormGroup>
+                            <Label>ZIP *</Label>
+                            <Input
+                                type="text"
+                                name="address.postal_code"
+                                value={billingDetails.address.postal_code}
+                                onChange={handleBillingChange}
+                                required
+                                placeholder="10001"
+                            />
+                        </FormGroup>
+                    </Col>
+                </Row>
             </div>
+
+            <div className="payment-section mb-4">
+                <h5 className="mb-3">Payment Information</h5>
+                <div className="payment-element-wrapper p-3 border rounded bg-white">
+                    <PaymentElement options={{ layout: 'tabs' }} />
+                </div>
+            </div>
+
+            <Button
+                type="submit"
+                variant="primary"
+                disabled={isProcessing || !stripe || !elements}
+                text={isProcessing ? 'Processing Payment...' : `Pay $${cartTotal.toFixed(2)}`}
+                className="w-100"
+            />
+
+            <p className="text-center text-muted small mt-3">
+                🔒 Secure payment powered by Stripe
+            </p>
         </Form>
     );
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        clearCart: () => dispatch(clearCart()),
-        showNotification: options => dispatch(success(options))
+// ==============================================
+// MAIN CHECKOUT COMPONENT - ENHANCED
+// ==============================================
+const CheckoutForm = (props) => {
+    const { cartItems, cartTotal, setError } = props;
+
+    const [clientSecret, setClientSecret] = useState('');
+    const [cartId, setCartId] = useState('');
+    const [orderId, setOrderId] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [initError, setInitError] = useState('');
+
+    useEffect(() => {
+        console.log('🔵 CheckoutForm mounted, creating payment intent...');
+        createPaymentIntent();
+    }, []);
+
+    const createPaymentIntent = async () => {
+        try {
+            setLoading(true);
+            setInitError('');
+
+            // ✅ TRY MULTIPLE STORAGE KEYS
+            let storedCartId = localStorage.getItem('cart_id') ||
+                localStorage.getItem('cartId') ||
+                sessionStorage.getItem('cart_id');
+
+            const token = localStorage.getItem('token') ||
+                localStorage.getItem('authToken') ||
+                localStorage.getItem('access_token');
+
+            console.log('📤 Creating payment intent...');
+            console.log('   Cart ID from storage:', storedCartId || 'NONE');
+            console.log('   Token exists:', !!token);
+            console.log('   Cart items:', cartItems.length);
+
+            const config = {
+                headers: { 'Content-Type': 'application/json' }
+            };
+
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+
+            // ✅ SEND COMPREHENSIVE DATA
+            const requestData = {
+                cartId: storedCartId || null,
+                amount: cartTotal,
+                currency: 'usd',
+                products: cartItems.map(item => ({
+                    product: item._id || item.id || item.product,
+                    quantity: item.quantity,
+                    price: item.price || item.purchasePrice || 0,
+                    taxable: item.taxable !== false
+                }))
+            };
+
+            console.log('📦 Request data:', {
+                hasCartId: !!requestData.cartId,
+                productCount: requestData.products.length,
+                amount: requestData.amount
+            });
+
+            const response = await axios.post(
+                `${API_URL}/api/order/stripe/create-payment-intent`,
+                requestData,
+                config
+            );
+
+            console.log('✅ Payment intent created:', {
+                success: response.data.success,
+                hasClientSecret: !!response.data.clientSecret,
+                cartId: response.data.cartId,
+                orderId: response.data.orderId
+            });
+
+            // ✅ SAVE CART ID FROM BACKEND RESPONSE
+            if (response.data.cartId) {
+                localStorage.setItem('cart_id', response.data.cartId);
+                console.log('✅ Cart ID saved to localStorage:', response.data.cartId);
+            }
+
+            if (response.data.success && response.data.clientSecret) {
+                setClientSecret(response.data.clientSecret);
+                setCartId(response.data.cartId || storedCartId || '');
+                setOrderId(response.data.orderId || '');
+                console.log('✅ State updated, payment form will render');
+            } else {
+                throw new Error('No client secret returned from server');
+            }
+        } catch (error) {
+            console.error('❌ Error creating payment intent:', error);
+            console.error('Response:', error.response?.data);
+
+            const errorMsg = error.response?.data?.error ||
+                error.message ||
+                'Failed to initialize payment';
+            setInitError(errorMsg);
+            if (setError) setError(errorMsg);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    if (loading) {
+        return (
+            <div className="text-center py-5">
+                <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
+                <p className="mt-3">Preparing secure checkout...</p>
+            </div>
+        );
+    }
+
+    if (initError || !clientSecret) {
+        return (
+            <div className="alert alert-danger">
+                <h5>⚠️ Payment Initialization Failed</h5>
+                <p>{initError || 'Could not initialize payment. Please try again.'}</p>
+                <button
+                    className="btn btn-primary mt-2"
+                    onClick={createPaymentIntent}
+                >
+                    Try Again
+                </button>
+            </div>
+        );
+    }
+
+    const elementsOptions = {
+        clientSecret: clientSecret,
+        appearance: {
+            theme: 'stripe',
+            variables: {
+                colorPrimary: '#0570de',
+                colorBackground: '#ffffff',
+                colorText: '#30313d',
+                fontFamily: 'system-ui, -apple-system, sans-serif',
+            }
+        }
+    };
+
+    return (
+        <div className="checkout-form-wrapper">
+            <Elements
+                stripe={stripePromise}
+                options={elementsOptions}
+                key={clientSecret}
+            >
+                <PaymentForm
+                    {...props}
+                    cartId={cartId}
+                    orderId={orderId}
+                />
+            </Elements>
+        </div>
+    );
 };
 
-export default connect(null, mapDispatchToProps)(CheckoutForm);
+const mapStateToProps = (state) => ({
+    user: state.account?.user || null,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    clearCart: () => dispatch(clearCart()),
+    showSuccessNotification: (options) => dispatch(success(options))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CheckoutForm);

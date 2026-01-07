@@ -403,7 +403,7 @@ class Homepage extends Component {
             <Col md={6} className="mb-4 mb-md-0">
               <div className="welcome-image-wrapper">
                 <img
-                  src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&h=600&fit=crop"
+                  src="https://s3.amazonaws.com/CFSV2/siteimages/wvr/321486-img.jpg"
                   alt="Funeral Home Interior"
                   className="img-fluid rounded shadow"
                 />

@@ -59,12 +59,11 @@ const ProductList = props => {
                     <div className='item-image-box'>
                       <img
                         className='item-image'
-                        src={`${product.imageUrl
-                            ? product.imageUrl
-                            : product.images && product.images[0]
-                              ? product.images[0].url
-                              : '/images/placeholder-image.png'
-                          }`}
+                        src={
+                          product.imageUrl ||
+                          product.images?.[0]?.url ||
+                          '/images/placeholder-image.png'
+                        }
                         alt={product.name}
                       />
                     </div>

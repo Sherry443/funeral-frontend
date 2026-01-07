@@ -1,6 +1,6 @@
 /**
  * COMPLETE CHECKOUT COMPONENT - FINAL FIXED VERSION
- * This ensures Elements wrapper is ONLY created AFTER clientSecret exists
+ * Fixed clearCart action import
  */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -11,8 +11,10 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 import axios from 'axios';
 import { Form, FormGroup, Label, Input, Row, Col, Spinner } from 'reactstrap';
 import Button from '../../components/Common/Button';
-import actions from '../../actions';
 import { success } from 'react-notification-system-redux';
+
+// ✅ FIXED: Import clearCart directly from the cart actions
+import { clearCart } from '../Cart/actions';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
@@ -28,7 +30,7 @@ const PaymentForm = (props) => {
         cartTotal,
         user,
         setError,
-        clearCart,
+        clearCart: clearCartAction,
         showSuccessNotification,
         cartId
     } = props;
@@ -144,7 +146,8 @@ const PaymentForm = (props) => {
 
                     console.log('✅ Order confirmed with backend');
 
-                    clearCart();
+                    // ✅ FIXED: Call clearCartAction (the prop)
+                    clearCartAction();
                     localStorage.removeItem('cart_id');
 
                     showSuccessNotification({
@@ -162,7 +165,8 @@ const PaymentForm = (props) => {
                 } catch (backendError) {
                     console.error('⚠️ Backend confirmation error:', backendError);
 
-                    clearCart();
+                    // ✅ FIXED: Call clearCartAction (the prop)
+                    clearCartAction();
                     localStorage.removeItem('cart_id');
 
                     showSuccessNotification({
@@ -466,7 +470,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    clearCart: () => dispatch(actions.clearCart()),
+    // ✅ FIXED: Dispatch clearCart correctly
+    clearCart: () => dispatch(clearCart()),
     showSuccessNotification: (options) => dispatch(success(options))
 });
 
