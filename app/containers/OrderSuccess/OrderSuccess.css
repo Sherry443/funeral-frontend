@@ -1,0 +1,241 @@
+/* OrderSuccess.css */
+
+.order-success-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    padding: 40px 0;
+}
+
+.success-card {
+    background: white;
+    border-radius: 16px;
+    padding: 60px 40px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-icon {
+    margin-bottom: 30px;
+    animation: scaleIn 0.5s ease-out 0.2s both;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+.success-icon svg {
+    color: #28a745;
+    filter: drop-shadow(0 4px 8px rgba(40, 167, 69, 0.3));
+}
+
+.success-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 15px;
+    animation: fadeIn 0.5s ease-out 0.3s both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.success-message {
+    font-size: 16px;
+    color: #6c757d;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    animation: fadeIn 0.5s ease-out 0.4s both;
+}
+
+.order-details {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 30px 0;
+    animation: fadeIn 0.5s ease-out 0.5s both;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #212529;
+    font-size: 14px;
+}
+
+.info-box {
+    background: #e7f3ff;
+    border-left: 4px solid #0570de;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 30px 0;
+    text-align: left;
+    animation: fadeIn 0.5s ease-out 0.6s both;
+}
+
+.info-box h5 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0570de;
+    margin-bottom: 15px;
+}
+
+.info-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.info-box li {
+    padding: 8px 0;
+    color: #495057;
+    font-size: 14px;
+    position: relative;
+    padding-left: 25px;
+}
+
+.info-box li:before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #28a745;
+    font-weight: bold;
+}
+
+.action-buttons {
+    margin: 40px 0 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeIn 0.5s ease-out 0.7s both;
+}
+
+.action-buttons button {
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.action-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.support-text {
+    margin-top: 20px;
+    animation: fadeIn 0.5s ease-out 0.8s both;
+}
+
+.support-text p {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+}
+
+.support-text a {
+    color: #0570de;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.support-text a:hover {
+    color: #0458b3;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .success-card {
+        padding: 40px 20px;
+    }
+
+    .success-title {
+        font-size: 24px;
+    }
+
+    .success-message {
+        font-size: 14px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons button {
+        width: 100%;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .order-success-page {
+        padding: 20px 0;
+    }
+
+    .success-card {
+        padding: 30px 15px;
+    }
+
+    .success-icon svg {
+        width: 60px;
+        height: 60px;
+    }
+
+    .success-title {
+        font-size: 20px;
+    }
+
+    .info-box {
+        padding: 15px;
+    }
+}

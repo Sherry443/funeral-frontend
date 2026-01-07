@@ -1,0 +1,100 @@
+/* ================= CSS FILE =================
+Create a new file: AddProduct.css
+=========================================== */
+
+/* Layout */
+.add-product-form {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+    background: #ffffff;
+}
+
+.form-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Inputs */
+.input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #0f766e;
+}
+
+/* Grid */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+/* Sections */
+.section {
+    margin-top: 24px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* Variant box */
+.variant-box {
+    border: 1px solid #e5e7eb;
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    background: #f9fafb;
+}
+
+/* Buttons */
+.btn-primary {
+    background: #0f766e;
+    color: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: #115e59;
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px dashed #0f766e;
+    color: #0f766e;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-secondary:hover {
+    background: #ecfeff;
+}
+
+/* Checkboxes */
+.checkbox-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 10px;
+}
+
+.checkbox-row label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
