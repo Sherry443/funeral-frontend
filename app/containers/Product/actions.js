@@ -93,7 +93,7 @@ export const filterProducts = (n, v) => {
 
       dispatch({ type: SET_ADVANCED_FILTERS, payload });
       const sortOrder = getSortOrder(payload.order);
-      const response = await axios.get(`${API_URL}/product/list`, {
+      const response = await axios.get(`${API_URL}/api/product/list`, {
         params: { ...payload, sortOrder }
       });
       const { products, totalPages, currentPage, count } = response.data;
@@ -141,7 +141,7 @@ export const fetchMemorialProducts = (obituaryId = null, type = null) => {
 
       console.log('🌳 Fetching memorial products with params:', params);
 
-      const response = await axios.get(`${API_URL}api/product/list/memorial`, {
+      const response = await axios.get(`${API_URL}/api/product/list/memorial`, {
         params
       });
 
@@ -221,7 +221,7 @@ export const fetchStoreProductById = id => {
 export const fetchProductsSelect = () => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.get(`${API_URL}api/product/list/select`);
+      const response = await axios.get(`${API_URL}/api/product/list/select`);
 
       const formattedProducts = formatSelectOptions(response.data.products);
 
@@ -241,7 +241,7 @@ export const fetchProducts = () => {
     try {
       dispatch(setProductLoading(true));
 
-      const response = await axios.get(`${API_URL}api/product`);
+      const response = await axios.get(`${API_URL}/api/product`);
 
       dispatch({
         type: FETCH_PRODUCTS,
@@ -259,7 +259,7 @@ export const fetchProducts = () => {
 export const fetchProduct = id => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.get(`${API_URL}api/product/${id}`);
+      const response = await axios.get(`${API_URL}/api/product/${id}`);
 
       const inventory = response.data.product.quantity;
 
@@ -356,7 +356,7 @@ export const addProduct = () => {
         }
       }
 
-      const response = await axios.post(`${API_URL}api/product/add`, formData, {
+      const response = await axios.post(`${API_URL}/api/product/add`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -436,7 +436,7 @@ export const updateProduct = () => {
         });
       }
 
-      const response = await axios.put(`${API_URL}api/product/${product._id}`, {
+      const response = await axios.put(`${API_URL}/api/product/${product._id}`, {
         product: newProduct
       });
 
@@ -459,7 +459,7 @@ export const updateProduct = () => {
 export const activateProduct = (id, value) => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.put(`${API_URL}api/product/${id}/active`, {
+      const response = await axios.put(`${API_URL}/api/product/${id}/active`, {
         product: {
           isActive: value
         }
@@ -484,7 +484,7 @@ export const activateProduct = (id, value) => {
 export const deleteProduct = id => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.delete(`${API_URL}api/product/delete/${id}`);
+      const response = await axios.delete(`${API_URL}/api/product/delete/${id}`);
 
       const successfulOptions = {
         title: `${response.data.message}`,
