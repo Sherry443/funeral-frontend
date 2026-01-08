@@ -109,7 +109,7 @@ class AddObituaryForm extends Component {
             }
 
             // IMPORTANT: Update this URL to match your backend port
-            const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+            const API_URL = process.env.REACT_APP_API_URL || 'https://funeralbackend.onrender.com/';
 
             const response = await fetch(`${API_URL}/api/obituaries`, {
                 method: 'POST',

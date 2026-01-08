@@ -14,7 +14,7 @@ import Button from '../../components/Common/Button';
 import { clearCart } from '../Cart/actions';
 import { success } from 'react-notification-system-redux';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://funeral-frontend-1xx5.onrender.com/';
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 // ==============================================

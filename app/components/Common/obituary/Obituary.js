@@ -46,7 +46,7 @@ class ObituaryPage extends Component {
     fetchObituaryData = (slug) => {
         this.setState({ loading: true, error: null });
 
-        const baseURL = 'http://localhost:3000';
+        const baseURL = 'https://funeralbackend.onrender.com/';
 
         fetch(`${baseURL}/api/obituaries/${slug}`)
             .then(obituaryResponse => {
@@ -132,7 +132,7 @@ class ObituaryPage extends Component {
             return;
         }
 
-        fetch('http://localhost:3000/api/condolences', {
+        fetch('https://funeralbackend.onrender.com/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

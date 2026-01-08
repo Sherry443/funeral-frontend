@@ -34,7 +34,7 @@ class Homepage extends Component {
       this.setState({ loading: true, error: null });
 
       // API call to fetch recent obituaries
-      const response = await fetch('http://localhost:3000/api/obituaries/recent', {
+      const response = await fetch('https://funeralbackend.onrender.com/api/obituaries/recent', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -53,7 +53,7 @@ class Homepage extends Component {
         name: `${obituary.firstName} ${obituary.lastName}`.toUpperCase(),
         date: this.formatDate(obituary.deathDate),
         location: obituary.location || 'Unknown',
-        image: obituary.photo || 'https://via.placeholder.com/400x400?text=No+Image',
+        image: obituary.photo,
         // Store full obituary data for routing
         slug: obituary.slug || obituary._id
       }));
@@ -126,7 +126,7 @@ class Homepage extends Component {
         name: `${obituary.firstName} ${obituary.lastName}`.toUpperCase(),
         date: this.formatDate(obituary.deathDate),
         location: obituary.location || 'Unknown',
-        image: obituary.photo || 'https://via.placeholder.com/400x400?text=No+Image',
+        image: obituary.photo,
         slug: obituary.slug || obituary._id
       }));
 
@@ -342,7 +342,7 @@ class Homepage extends Component {
                               objectFit: 'cover'
                             }}
                             onError={(e) => {
-                              e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
+                              e.target.src;
                             }}
                           />
                         </div>

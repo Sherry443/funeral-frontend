@@ -48,7 +48,7 @@ class ObituaryPage extends Component {
             this.setState({ loading: true, error: null });
 
             // Fetch obituary details
-            const obituaryResponse = await fetch(`http://localhost:3000/api/obituaries/${slug}`);
+            const obituaryResponse = await fetch(`https://funeralbackend.onrender.com/api/obituaries/${slug}`);
 
             if (!obituaryResponse.ok) {
                 throw new Error('Obituary not found');
@@ -59,7 +59,7 @@ class ObituaryPage extends Component {
 
             // Fetch condolences for this obituary (including tree purchases)
             const condolencesResponse = await fetch(
-                `http://localhost:3000/api/condolences/obituary/${obituaryData._id}`
+                `https://funeralbackend.onrender.com/api/condolences/obituary/${obituaryData._id}`
             );
 
             if (condolencesResponse.ok) {
@@ -133,7 +133,7 @@ class ObituaryPage extends Component {
         }
 
         try {
-            const response = await fetch('http://localhost:3000/api/condolences', {
+            const response = await fetch('https://funeralbackend.onrender.com/api/condolences', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -315,7 +315,7 @@ class ObituaryPage extends Component {
                             <div className="bg-white rounded-lg shadow-lg overflow-hidden -mt-32 relative z-10">
                                 <div className="relative">
                                     <img
-                                        src={obituaryData.photo || 'https://via.placeholder.com/400x400?text=No+Photo'}
+                                        src={obituaryData.photo}
                                         alt={`${obituaryData.firstName} ${obituaryData.lastName}`}
                                         className="w-full h-80 object-cover"
                                     />
