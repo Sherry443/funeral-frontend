@@ -374,7 +374,7 @@ const CheckoutForm = (props) => {
             console.log('📦 Request data:', requestData);
 
             const response = await axios.post(
-                `${API_URL}/api/order/stripe/create-payment-intent`,
+                `${API_URL}api/order/stripe/create-payment-intent`,
                 requestData,
                 config
             );

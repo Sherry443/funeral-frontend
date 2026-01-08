@@ -137,7 +137,7 @@ const CheckoutPage = ({ cartId, amount, products }) => {
 
             console.log('Creating payment intent...', { cartId, amount });
 
-            const response = await fetch('/api/order/stripe/create-payment-intent', {
+            const response = await fetch('api/order/stripe/create-payment-intent', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
