@@ -178,8 +178,8 @@ export const fetchStoreProduct = (identifier, useId = false) => {
     try {
       // Determine endpoint based on identifier type
       const endpoint = useId
-        ? `${API_URL}api/product/item/id/${identifier}` // MongoDB ObjectId
-        : `${API_URL}api/product/item/${identifier}`; // Slug
+        ? `${API_URL}/api/product/item/id/${identifier}` // MongoDB ObjectId
+        : `${API_URL}/api/product/item/${identifier}`; // Slug
 
       console.log(`📦 Fetching product from: ${endpoint}`);
 

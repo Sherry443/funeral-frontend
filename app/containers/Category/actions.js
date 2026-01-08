@@ -64,7 +64,7 @@ export const resetCategory = () => {
 export const fetchStoreCategories = () => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.get(`${API_URL}/category/list`);
+      const response = await axios.get(`${API_URL}/api/category/list`);
 
       dispatch({
         type: FETCH_STORE_CATEGORIES,
@@ -81,7 +81,7 @@ export const fetchCategories = () => {
   return async (dispatch, getState) => {
     try {
       dispatch({ type: SET_CATEGORIES_LOADING, payload: true });
-      const response = await axios.get(`${API_URL}/category`);
+      const response = await axios.get(`${API_URL}/api/category`);
 
       dispatch({
         type: FETCH_CATEGORIES,
@@ -99,7 +99,7 @@ export const fetchCategories = () => {
 export const fetchCategory = id => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.get(`${API_URL}/category/${id}`);
+      const response = await axios.get(`${API_URL}/api/category/${id}`);
 
       response.data.category.products = formatSelectOptions(
         response.data.category.products
@@ -145,7 +145,7 @@ export const addCategory = () => {
         return dispatch({ type: SET_CATEGORY_FORM_ERRORS, payload: errors });
       }
 
-      const response = await axios.post(`${API_URL}/category/add`, newCategory);
+      const response = await axios.post(`${API_URL}/api/category/add`, newCategory);
 
       const successfulOptions = {
         title: `${response.data.message}`,
@@ -206,7 +206,7 @@ export const updateCategory = () => {
         });
       }
 
-      const response = await axios.put(`${API_URL}/category/${category._id}`, {
+      const response = await axios.put(`${API_URL}/api/category/${category._id}`, {
         category: newCategory
       });
 
@@ -231,7 +231,7 @@ export const updateCategory = () => {
 export const activateCategory = (id, value) => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.put(`${API_URL}/category/${id}/active`, {
+      const response = await axios.put(`${API_URL}/api/category/${id}/active`, {
         category: {
           isActive: value
         }
@@ -256,7 +256,7 @@ export const activateCategory = (id, value) => {
 export const deleteCategory = id => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.delete(`${API_URL}/category/delete/${id}`);
+      const response = await axios.delete(`${API_URL}/api/category/delete/${id}`);
 
       const successfulOptions = {
         title: `${response.data.message}`,

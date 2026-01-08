@@ -43,7 +43,7 @@ export const subscribeToNewsletter = () => {
       }
 
       const response = await axios.post(
-        `${API_URL}/newsletter/subscribe`,
+        `${API_URL}/api/newsletter/subscribe`,
         user
       );
 

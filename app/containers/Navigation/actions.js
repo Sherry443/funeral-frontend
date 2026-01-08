@@ -48,7 +48,7 @@ export const onSuggestionsFetchRequested = value => {
     try {
       if (inputValue && inputValue.length % 3 === 0) {
         const response = await axios.get(
-          `${API_URL}/product/list/search/${inputValue}`
+          `${API_URL}/api/product/list/search/${inputValue}`
         );
         dispatch({
           type: SUGGESTIONS_FETCH_REQUEST,

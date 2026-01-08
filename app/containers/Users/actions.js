@@ -27,7 +27,7 @@ export const fetchUsers = page => {
   return async (dispatch, getState) => {
     try {
       dispatch(setUserLoading(true));
-      const response = await axios.get(`${API_URL}/user`, {
+      const response = await axios.get(`${API_URL}/api/user`, {
         params: {
           page: page ?? 1,
           limit: 20
@@ -57,7 +57,7 @@ export const searchUsers = filter => {
     try {
       dispatch(setUserLoading(true));
 
-      const response = await axios.get(`${API_URL}/user/search`, {
+      const response = await axios.get(`${API_URL}/api/user/search`, {
         params: {
           search: filter.value
         }

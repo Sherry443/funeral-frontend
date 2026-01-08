@@ -354,7 +354,7 @@ export const getCartId = () => {
       console.log('Creating cart on backend with products:', products);
 
       // Create cart on backend
-      const response = await axios.post(`${API_URL}/cart/add`, { products });
+      const response = await axios.post(`${API_URL}/api/cart/add`, { products });
 
       console.log('Cart created successfully:', response.data);
 
