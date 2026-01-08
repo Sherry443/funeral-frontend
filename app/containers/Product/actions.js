@@ -141,7 +141,7 @@ export const fetchMemorialProducts = (obituaryId = null, type = null) => {
 
       console.log('🌳 Fetching memorial products with params:', params);
 
-      const response = await axios.get(`${API_URL}/product/list/memorial`, {
+      const response = await axios.get(`${API_URL}api/product/list/memorial`, {
         params
       });
 
@@ -178,8 +178,8 @@ export const fetchStoreProduct = (identifier, useId = false) => {
     try {
       // Determine endpoint based on identifier type
       const endpoint = useId
-        ? `${API_URL}/product/item/id/${identifier}` // MongoDB ObjectId
-        : `${API_URL}/product/item/${identifier}`; // Slug
+        ? `${API_URL}api/product/item/id/${identifier}` // MongoDB ObjectId
+        : `${API_URL}api/product/item/${identifier}`; // Slug
 
       console.log(`📦 Fetching product from: ${endpoint}`);
 
@@ -221,7 +221,7 @@ export const fetchStoreProductById = id => {
 export const fetchProductsSelect = () => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.get(`${API_URL}/product/list/select`);
+      const response = await axios.get(`${API_URL}api/product/list/select`);
 
       const formattedProducts = formatSelectOptions(response.data.products);
 
@@ -259,7 +259,7 @@ export const fetchProducts = () => {
 export const fetchProduct = id => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.get(`${API_URL}/product/${id}`);
+      const response = await axios.get(`${API_URL}api/product/${id}`);
 
       const inventory = response.data.product.quantity;
 
@@ -356,7 +356,7 @@ export const addProduct = () => {
         }
       }
 
-      const response = await axios.post(`${API_URL}/product/add`, formData, {
+      const response = await axios.post(`${API_URL}api/product/add`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -436,7 +436,7 @@ export const updateProduct = () => {
         });
       }
 
-      const response = await axios.put(`${API_URL}/product/${product._id}`, {
+      const response = await axios.put(`${API_URL}api/product/${product._id}`, {
         product: newProduct
       });
 
@@ -459,7 +459,7 @@ export const updateProduct = () => {
 export const activateProduct = (id, value) => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.put(`${API_URL}/product/${id}/active`, {
+      const response = await axios.put(`${API_URL}api/product/${id}/active`, {
         product: {
           isActive: value
         }
@@ -484,7 +484,7 @@ export const activateProduct = (id, value) => {
 export const deleteProduct = id => {
   return async (dispatch, getState) => {
     try {
-      const response = await axios.delete(`${API_URL}/product/delete/${id}`);
+      const response = await axios.delete(`${API_URL}api/product/delete/${id}`);
 
       const successfulOptions = {
         title: `${response.data.message}`,
