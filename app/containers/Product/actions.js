@@ -241,7 +241,7 @@ export const fetchProducts = () => {
     try {
       dispatch(setProductLoading(true));
 
-      const response = await axios.get(`${API_URL}/product`);
+      const response = await axios.get(`${API_URL}api/product`);
 
       dispatch({
         type: FETCH_PRODUCTS,
