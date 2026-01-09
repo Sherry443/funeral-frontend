@@ -347,7 +347,7 @@ class ObituaryPage extends Component {
                                             display: 'block'
                                         }}
                                     >
-                                        🧪 TEST - Click Me First!
+                                        TEST - Click Me First!
                                     </button>
 
                                     {/* PLANT A TREE BUTTON */}

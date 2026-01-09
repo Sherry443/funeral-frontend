@@ -43,10 +43,10 @@ body {
 }
 
 .wrapper {
-  padding: 260px 0px 25px;
+  padding: 6rem 0rem 2rem;
 
   @include media-breakpoint-up(md) {
-    padding: 250px 0px;
+    padding: 6rem 0rem;
   }
 }
 

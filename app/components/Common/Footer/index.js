@@ -1,94 +1,128 @@
 /**
  *
- * Footer
+ * Footer - West River Funeral Directors
  *
  */
 
 import React from 'react';
-
 import { Link } from 'react-router-dom';
-import { Container } from 'reactstrap';
-
-import Newsletter from '../../../containers/Newsletter';
+import { Container, Row, Col } from 'reactstrap';
+import { MapPin, Phone, Mail, Printer, Facebook } from 'lucide-react';
+import "./Footer.css"
 
 const Footer = () => {
-  const infoLinks = [
-    { id: 0, name: 'Contact Us', to: '/contact' },
-    { id: 1, name: 'Sell With Us', to: '/sell' },
-    { id: 2, name: 'Shipping', to: '/shipping' }
-  ];
-
-  const footerBusinessLinks = (
-    <ul className='support-links'>
-      <li className='footer-link'>
-        <Link to='/dashboard'>Account Details</Link>
-      </li>
-      <li className='footer-link'>
-        <Link to='/dashboard/orders'>Orders</Link>
-      </li>
-    </ul>
-  );
-
-  const footerLinks = infoLinks.map(item => (
-    <li key={item.id} className='footer-link'>
-      <Link key={item.id} to={item.to}>
-        {item.name}
-      </Link>
-    </li>
-  ));
-
   return (
-    <footer className='footer'>
-      <Container>
-        <div className='footer-content'>
-          <div className='footer-block'>
-            <div className='block-title'>
-              <h3 className='text-uppercase'>Customer Service</h3>
+    <footer className='funeral-footer'>
+      <Container fluid>
+        <Row className='g-0'>
+          {/* Left Section - Logo and Grief Support */}
+          <Col lg={4} className='footer-left-section'>
+            <div className='footer-logo-section'>
+              <Link to='/'>
+                <img
+                  src='/assets/images/west-river-logo.png'
+                  alt='West River Funeral Directors LLC'
+                  className='footer-logo'
+                />
+              </Link>
             </div>
-            <div className='block-content'>
-              <ul>{footerLinks}</ul>
+
+            <div className='footer-grief-support'>
+              <h3 className='grief-support-title'>A year of daily grief support</h3>
+              <p className='grief-support-text'>
+                Our support in your time of need does not end after the funeral services.
+                ◆Enter your email below to receive a grief support message from us each day
+                for a year. ◆You can unsubscribe at any time.
+              </p>
+              <div className='grief-support-form'>
+                <input
+                  type='email'
+                  placeholder='Your Email'
+                  className='grief-email-input'
+                />
+              </div>
             </div>
-          </div>
-          <div className='footer-block'>
-            <div className='block-title'>
-              <h3 className='text-uppercase'>Links</h3>
+          </Col>
+
+          {/* Center Section - Location */}
+          <Col lg={4} className='footer-center-section'>
+            <div className='footer-location-info'>
+              <h3 className='footer-section-title'>Our Location</h3>
+
+              <div className='location-details'>
+                <div className='location-item'>
+                  <MapPin size={20} className='location-icon' />
+                  <div className='location-text'>
+                    <strong>West River Funeral Directors LLC</strong><br />
+                    420 East Saint Patrick St, Ste 106<br />
+                    Rapid City, SD 57701
+                  </div>
+                </div>
+
+                <div className='location-item'>
+                  <Phone size={18} className='location-icon' />
+                  <div className='location-text'>
+                    Tel: 1-605-787-3940
+                  </div>
+                </div>
+
+                <div className='location-item'>
+                  <Printer size={18} className='location-icon' />
+                  <div className='location-text'>
+                    Fax: 1-605-854-5202
+                  </div>
+                </div>
+
+                <div className='footer-social-icons'>
+                  <a href='https://www.google.com/maps' target='_blank' rel='noreferrer noopener' className='social-icon'>
+                    <MapPin size={20} />
+                  </a>
+                  <a href='mailto:info@westriverfd.com' className='social-icon'>
+                    <Mail size={20} />
+                  </a>
+                  <a href='#' onClick={(e) => { e.preventDefault(); window.print(); }} className='social-icon'>
+                    <Printer size={20} />
+                  </a>
+                  <a href='https://facebook.com' target='_blank' rel='noreferrer noopener' className='social-icon'>
+                    <Facebook size={20} />
+                  </a>
+                </div>
+              </div>
             </div>
-            <div className='block-content'>
-              <ul>{footerLinks}</ul>
-            </div>
-          </div>
-          <div className='footer-block'>
-            <div className='block-title'>
-              <h3 className='text-uppercase'>Newsletter</h3>
-              <Newsletter />
-            </div>
-          </div>
-        </div>
-        <div className='footer-copyright'>
-          <span>© {new Date().getFullYear()} MERN Store</span>
-        </div>
-        <ul className='footer-social-item'>
-          <li>
-            <a href='/#facebook' rel='noreferrer noopener' target='_blank'>
-              <span className='facebook-icon' />
-            </a>
-          </li>
-          <li>
-            <a href='/#instagram' rel='noreferrer noopener' target='_blank'>
-              <span className='instagram-icon' />
-            </a>
-          </li>
-          <li>
-            <a href='/#pinterest' rel='noreferrer noopener' target='_blank'>
-              <span className='pinterest-icon' />
-            </a>
-          </li>
-          <li>
-            <a href='/#twitter' rel='noreferrer noopener' target='_blank'>
-              <span className='twitter-icon' />
-            </a>
-          </li>
-        </ul>
+          </Col>
+
+          {/* Right Section - Navigation Links */}
+          <Col lg={4} className='footer-right-section'>
+            <nav className='footer-navigation'>
+              <ul className='footer-nav-list'>
+                <li className='footer-nav-item'>
+                  <Link to='/'>Home</Link>
+                </li>
+                <li className='footer-nav-item'>
+                  <Link to='/obituaries'>Obituaries</Link>
+                </li>
+                <li className='footer-nav-item'>
+                  <Link to='/about'>About Us</Link>
+                </li>
+                <li className='footer-nav-item'>
+                  <Link to='/services'>Services</Link>
+                </li>
+                <li className='footer-nav-item'>
+                  <Link to='/pre-plan'>Pre-Plan</Link>
+                </li>
+                <li className='footer-nav-item'>
+                  <Link to='/location'>Location</Link>
+                </li>
+                <li className='footer-nav-item'>
+                  <Link to='/resources'>Resources</Link>
+                </li>
+                <li className='footer-nav-item'>
+                  <Link to='/veterans'>Veterans</Link>
+                </li>
+              </ul>
+            </nav>
+          </Col>
+        </Row>
       </Container>
     </footer>
   );

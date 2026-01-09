@@ -1,0 +1,406 @@
+/* ==========================================
+   FUNERAL HOME FOOTER STYLES
+   West River Funeral Directors
+   ========================================== */
+
+.funeral-footer {
+    background-color: #2d4543;
+    color: #ffffff;
+    padding: 3rem 0 0 0;
+    font-family: Arial, sans-serif;
+    margin-top: auto;
+}
+
+/* ==========================================
+     LEFT SECTION - Logo & Grief Support
+     ========================================== */
+.footer-left-section {
+    padding: 2rem 3rem;
+    background-color: #2d4543;
+}
+
+.footer-logo-section {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.footer-logo {
+    max-width: 300px;
+    height: auto;
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.footer-grief-support {
+    margin-top: 2rem;
+}
+
+.grief-support-title {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.grief-support-text {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+.grief-support-form {
+    margin-top: 1rem;
+}
+
+.grief-email-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    color: #333;
+    transition: box-shadow 0.3s ease;
+}
+
+.grief-email-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.grief-email-input::placeholder {
+    color: #999;
+}
+
+/* ==========================================
+     CENTER SECTION - Location
+     ========================================== */
+.footer-center-section {
+    padding: 2rem 3rem;
+    background-color: #2d4543;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-location-info {
+    height: 100%;
+}
+
+.footer-section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+.location-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.location-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.location-icon {
+    color: #ffffff;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.location-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+}
+
+.location-text strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Social Icons */
+.footer-social-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.social-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ==========================================
+     RIGHT SECTION - Navigation
+     ========================================== */
+.footer-right-section {
+    padding: 2rem 3rem;
+    background-color: #2d4543;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+
+.footer-navigation {
+    width: 100%;
+}
+
+.footer-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-nav-item {
+    padding: 0;
+    margin: 0;
+}
+
+.footer-nav-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    display: inline-block;
+    padding: 0.4rem 0;
+    letter-spacing: 0.3px;
+}
+
+.footer-nav-item a:hover {
+    color: #b8d4d2;
+    padding-left: 5px;
+}
+
+/* ==========================================
+     RESPONSIVE DESIGN
+     ========================================== */
+
+/* Tablets and below */
+@media (max-width: 991px) {
+
+    .footer-left-section,
+    .footer-center-section,
+    .footer-right-section {
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-right-section {
+        border-bottom: none;
+    }
+
+    .footer-logo {
+        max-width: 250px;
+    }
+
+    .footer-section-title {
+        font-size: 1.15rem;
+    }
+
+    .grief-support-title {
+        font-size: 1.15rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .funeral-footer {
+        padding: 2rem 0 0 0;
+    }
+
+    .footer-left-section,
+    .footer-center-section,
+    .footer-right-section {
+        padding: 2rem 1.5rem;
+    }
+
+    .footer-logo {
+        max-width: 220px;
+    }
+
+    .grief-support-title {
+        font-size: 1.1rem;
+    }
+
+    .grief-support-text {
+        font-size: 0.85rem;
+    }
+
+    .grief-email-input {
+        max-width: 100%;
+    }
+
+    .footer-section-title {
+        font-size: 1.1rem;
+    }
+
+    .location-text {
+        font-size: 0.85rem;
+    }
+
+    .footer-nav-item a {
+        font-size: 0.95rem;
+    }
+
+    .footer-social-icons {
+        gap: 0.75rem;
+    }
+
+    .social-icon {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 575px) {
+
+    .footer-left-section,
+    .footer-center-section,
+    .footer-right-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .footer-logo {
+        max-width: 200px;
+    }
+
+    .grief-support-title {
+        font-size: 1rem;
+    }
+
+    .grief-support-text {
+        font-size: 0.8rem;
+        line-height: 1.6;
+    }
+
+    .grief-email-input {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .footer-section-title {
+        font-size: 1rem;
+    }
+
+    .location-item {
+        gap: 0.75rem;
+    }
+
+    .location-text {
+        font-size: 0.8rem;
+    }
+
+    .footer-nav-item a {
+        font-size: 0.9rem;
+    }
+
+    .social-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .social-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 400px) {
+    .footer-logo {
+        max-width: 180px;
+    }
+
+    .grief-support-title {
+        font-size: 0.95rem;
+    }
+
+    .footer-section-title {
+        font-size: 0.95rem;
+    }
+
+    .footer-nav-item a {
+        font-size: 0.85rem;
+    }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    .funeral-footer {
+        background-color: #1a2725;
+    }
+
+    .footer-left-section,
+    .footer-center-section,
+    .footer-right-section {
+        background-color: #1a2725;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .funeral-footer {
+        background-color: #ffffff;
+        color: #000000;
+        page-break-inside: avoid;
+    }
+
+    .footer-left-section,
+    .footer-center-section,
+    .footer-right-section {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .grief-support-title,
+    .footer-section-title,
+    .location-text strong,
+    .footer-nav-item a {
+        color: #000000;
+    }
+
+    .location-text,
+    .grief-support-text {
+        color: #333333;
+    }
+
+    .grief-email-input,
+    .footer-social-icons {
+        display: none;
+    }
+}

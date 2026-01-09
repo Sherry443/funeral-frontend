@@ -1,34 +1,3 @@
-// start input button styles
-input[type='button'],
-input[type='submit'],
-input[type='reset'],
-button[type='button'],
-button[type='submit'],
-button[type='reset'],
-button {
-  border: none;
-  background: transparent;
-  color: $font-custom-color !important;
-  font-size: $font-size-small;
-  font-weight: $font-weight-medium;
-  text-decoration: none;
-  text-transform: capitalize;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-  }
-
-  :active {
-    outline: none;
-  }
-
-  &:disabled {
-    background-color: $disabled-bg;
-    border-color: transparent !important;
-    pointer-events: none;
-  }
-}
 // end input button styles
 
 // basic styles
@@ -300,14 +269,17 @@ body.user-is-tabbing button:focus {
       .btn-icon {
         margin-right: 6px;
       }
+
       .btn-text {
         margin-right: 5px;
       }
     }
+
     &.icon-right {
       .btn-icon {
         margin-left: 6px;
       }
+
       .btn-text {
         margin-left: 5px;
       }
@@ -320,6 +292,7 @@ body.user-is-tabbing button:focus {
   &.bag-btn {
     box-shadow: $box-shadow-custom;
     min-width: 185px;
+
     @include media-breakpoint-down(sm) {
       width: 100% !important;
     }
