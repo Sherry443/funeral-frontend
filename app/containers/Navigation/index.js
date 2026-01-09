@@ -306,9 +306,6 @@ class Navigation extends React.PureComponent {
                 />
               </Col>
               <Col xs='6' className='text-center'>
-                <Link to='/'>
-                  <h1 className='logo mobile-logo'>WEST RIVER</h1>
-                </Link>
               </Col>
               <Col xs='3' className='text-right'>
                 <CartIcon cartItems={cartItems} onClick={toggleCart} />
