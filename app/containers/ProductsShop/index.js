@@ -7,7 +7,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import actions from '../../actions';
-import './ProductShop.css';
+import './ProductsShop.css';
 
 class ProductsShop extends React.PureComponent {
   constructor(props) {
@@ -69,16 +69,38 @@ class ProductsShop extends React.PureComponent {
       obituaryId
     });
 
-    // Add to cart with obituary context
-    const cartItem = {
-      product: product._id,
+    // Prepare complete product data for cart
+    const cartProduct = {
+      _id: product._id,
+      sku: product.sku,
+      name: product.name,
+      slug: product.slug,
+      imageUrl: product.images && product.images.length > 0 ? product.images[0].url : null,
+      imageKey: product.images && product.images.length > 0 ? product.images[0].key : null,
+      price: selectedVariant.price,
       quantity: 1,
-      variant: variantIndex,
+      taxable: product.taxable || false,
+      isActive: product.isActive,
+      variant: selectedVariant,
+      variantIndex: variantIndex,
+      // Memorial context if applicable
       obituaryId: obituaryId || null,
       memorialType: product.type || null
     };
 
-    this.props.handleAddToCart(cartItem);
+    try {
+      // Call the Redux action to add to cart
+      this.props.handleAddToCart(cartProduct);
+
+      // Show success message (optional)
+      console.log('✅ Product added to cart successfully');
+
+      // You can add a toast notification here if you have a notification system
+      // For now, we'll just log it
+    } catch (error) {
+      console.error('❌ Error adding product to cart:', error);
+      alert('Failed to add product to cart. Please try again.');
+    }
   }
 
   getSelectedVariant = (product) => {
@@ -113,6 +135,12 @@ class ProductsShop extends React.PureComponent {
       <div className="products-shop">
         <div className="products-grid">
           {products.map((product) => {
+            // Validate product has required data
+            if (!product._id || !product.name || !product.variants || product.variants.length === 0) {
+              console.warn('Invalid product data:', product);
+              return null;
+            }
+
             const selectedVariant = this.getSelectedVariant(product);
             const imageUrl = product.images && product.images.length > 0
               ? product.images[0].url
@@ -125,6 +153,9 @@ class ProductsShop extends React.PureComponent {
                     src={imageUrl}
                     alt={product.name}
                     className="product-image"
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/300x300?text=No+Image';
+                    }}
                   />
                 </div>
 
@@ -174,7 +205,8 @@ const mapStateToProps = state => {
   return {
     products: state.product.storeProducts,
     isLoading: state.product.isLoading,
-    authenticated: state.authentication.authenticated
+    authenticated: state.authentication.authenticated,
+    cartItems: state.cart.cartItems
   };
 };
 
