@@ -7,6 +7,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
+import logo from "../../../../public/images/logo.png"
 import { MapPin, Phone, Mail, Printer, Facebook } from 'lucide-react';
 import "./Footer.css"
 
@@ -20,7 +21,7 @@ const Footer = () => {
             <div className='footer-logo-section'>
               <Link to='/'>
                 <img
-                  src='/assets/images/west-river-logo.png'
+                  src={logo}
                   alt='West River Funeral Directors LLC'
                   className='footer-logo'
                 />

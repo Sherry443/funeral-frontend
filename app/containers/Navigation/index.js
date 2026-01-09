@@ -11,6 +11,7 @@ import { Link, NavLink as ActiveLink, withRouter } from 'react-router-dom';
 import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlightMatch from 'autosuggest-highlight/match';
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse';
+import logo from "../../../public/images/logo.png"
 import "./Navigation.css"
 import {
   Container,
@@ -213,9 +214,9 @@ class Navigation extends React.PureComponent {
               {/* Center Logo */}
               <Col xs='12' md='6' lg='4' className='text-center py-3 py-md-2'>
                 <Link to='/' className='center-logo-link'>
-                  <h1 className='logo center-logo'>WEST RIVERR</h1>
+
                   {/* Add your logo image here if available */}
-                  {/* <img src='/images/logo.png' alt='MERN Store' className='center-logo-img' /> */}
+                  <img src={logo} alt='MERN Store' className='center-logo-img' />
                 </Link>
               </Col>
 
